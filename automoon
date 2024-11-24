@@ -1,57 +1,52 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 local Camera = workspace.CurrentCamera
+local Humanoid = Character:WaitForChild("Humanoid")
 
-local Races = {
-    Human = {Color = Color3.new(1, 1, 1), SoundId = "rbxassetid://1234567890"},
-    Fishman = {Color = Color3.new(0, 0, 1), SoundId = "rbxassetid://1234567891"},
-    Skypiean = {Color = Color3.new(1, 1, 0), SoundId = "rbxassetid://1234567892"},
-    Mink = {Color = Color3.new(1, 0.5, 0), SoundId = "rbxassetid://1234567893"},
-    Cyborg = {Color = Color3.new(0.5, 0.5, 1), SoundId = "rbxassetid://1234567894"},
-    Ghoul = {Color = Color3.new(1, 0, 0), SoundId = "rbxassetid://1234567895"}
-}
-
-Camera.FieldOfView = 70
-LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
-Camera.CameraType = Enum.CameraType.Custom
-
-local function DetectRace()
-    for race, _ in pairs(Races) do
-        if Character:FindFirstChild(race) then
-            return race
-        end
+-- Tăng tốc độ chạy (giống như Tộc Thỏ V3)
+local function IncreaseSpeed(speedBoost)
+    if Humanoid then
+        Humanoid.WalkSpeed = Humanoid.WalkSpeed + speedBoost
     end
-    return "Unknown"
 end
 
-local function ActivateRaceV4Fake(race)
-    if race == "Unknown" then return end
-
-    local raceData = Races[race]
-
-    local light = Instance.new("PointLight")
-    light.Parent = Character:FindFirstChild("HumanoidRootPart") or Character:WaitForChild("HumanoidRootPart")
-    light.Brightness = 5
-    light.Range = 15
-    light.Color = raceData.Color
-
-    local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
-    local textLabel = Instance.new("TextLabel", gui)
-    textLabel.Size = UDim2.new(0.3, 0, 0.1, 0)
-    textLabel.Position = UDim2.new(0.35, 0, 0.4, 0)
-    textLabel.Text = race .. " V4 Activated! (Fake)"
-    textLabel.TextScaled = true
-    textLabel.TextColor3 = raceData.Color
-    textLabel.BackgroundTransparency = 1
-    textLabel.Font = Enum.Font.SourceSansBold
-
-    local sound = Instance.new("Sound", Character:WaitForChild("HumanoidRootPart"))
-    sound.SoundId = raceData.SoundId
-    sound.Volume = 1
-    sound.Looped = false
-    sound:Play()
+-- Thu nhỏ góc nhìn (Tạo góc nhìn thứ nhất)
+local function SetFirstPersonView()
+    Camera.FieldOfView = 70
+    LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+    Camera.CameraType = Enum.CameraType.Custom
 end
 
-local currentRace = DetectRace()
-ActivateRaceV4Fake(currentRace)
+-- Tạo hiệu ứng xoáy màu xanh
+local function CreateSpiralEffect()
+    local particleEmitter = Instance.new("ParticleEmitter")
+    particleEmitter.Parent = HumanoidRootPart
+    particleEmitter.Texture = "rbxassetid://9672913551"  -- ID ảnh xoáy, có thể thay bằng ID ảnh khác
+    particleEmitter.Color = ColorSequence.new(Color3.fromRGB(0, 255, 0))  -- Màu xanh lá
+    particleEmitter.Size = NumberSequence.new({NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(1, 3)}) -- Kích thước thay đổi
+    particleEmitter.Lifetime = NumberRange.new(1, 2)  -- Thời gian sống của mỗi hạt
+    particleEmitter.Rate = 50  -- Tốc độ phát sinh hạt
+    particleEmitter.Speed = NumberRange.new(5, 10)  -- Tốc độ di chuyển của hạt
+    particleEmitter.Rotation = NumberRange.new(0, 360)  -- Xoay ngẫu nhiên
+    particleEmitter.RotSpeed = NumberRange.new(-100, 100)  -- Tốc độ xoay ngẫu nhiên
+    particleEmitter.VelocitySpread = 180  -- Phạm vi lan tỏa của các hạt
+
+    -- Gia tốc cho hiệu ứng vòng xoáy
+    particleEmitter.Acceleration = Vector3.new(0, 5, 0)  -- Gia tốc lên theo trục Y
+
+    -- Tự động hủy hiệu ứng sau 10 giây
+    task.delay(10, function()
+        particleEmitter:Destroy()
+    end)
+end
+
+-- Kích hoạt hiệu ứng Tộc Thỏ V3 mà không có thông báo
+local function ActivateRabbitRaceV3()
+    IncreaseSpeed(50)  -- Tăng tốc độ chạy thêm 50
+    SetFirstPersonView()  -- Chuyển sang góc nhìn thứ nhất
+    CreateSpiralEffect()  -- Tạo hiệu ứng xoáy
+end
+
+ActivateRabbitRaceV3()  -- Thực thi script
