@@ -1,0 +1,9 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+Camera.FieldOfView = 70
+
+LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
+
+Camera.CameraType = Enum.CameraType.Custom
