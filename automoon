@@ -1,9 +1,54 @@
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
+local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Camera = workspace.CurrentCamera
 
+local Races = {
+    Human = Color3.new(1, 1, 1),
+    Fishman = Color3.new(0, 0, 1),
+    Skypiean = Color3.new(1, 1, 0),
+    Mink = Color3.new(1, 0.5, 0),
+    Cyborg = Color3.new(0.5, 0.5, 1),
+    Ghoul = Color3.new(1, 0, 0)
+}
+
 Camera.FieldOfView = 70
-
 LocalPlayer.CameraMode = Enum.CameraMode.LockFirstPerson
-
 Camera.CameraType = Enum.CameraType.Custom
+
+local function DetectRace()
+    for race, _ in pairs(Races) do
+        if Character:FindFirstChild(race) then
+            return race
+        end
+    end
+    return "Unknown"
+end
+
+local function ActivateRaceV3Fake(race)
+    if race == "Unknown" then return end
+
+    local light = Instance.new("PointLight")
+    light.Parent = Character:FindFirstChild("HumanoidRootPart") or Character:WaitForChild("HumanoidRootPart")
+    light.Brightness = 5
+    light.Range = 15
+    light.Color = Races[race]
+
+    local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
+    local textLabel = Instance.new("TextLabel", gui)
+    textLabel.Size = UDim2.new(0.3, 0, 0.1, 0)
+    textLabel.Position = UDim2.new(0.35, 0, 0.4, 0)
+    textLabel.Text = race .. " V3 Activated! (Fake)"
+    textLabel.TextScaled = true
+    textLabel.TextColor3 = Races[race]
+    textLabel.BackgroundTransparency = 1
+    textLabel.Font = Enum.Font.SourceSansBold
+
+    task.delay(10, function()
+        light:Destroy()
+        gui:Destroy()
+    end)
+end
+
+local currentRace = DetectRace()
+ActivateRaceV3Fake(currentRace)
