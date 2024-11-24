@@ -4,12 +4,12 @@ local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
 local Camera = workspace.CurrentCamera
 
 local Races = {
-    Human = Color3.new(1, 1, 1),
-    Fishman = Color3.new(0, 0, 1),
-    Skypiean = Color3.new(1, 1, 0),
-    Mink = Color3.new(1, 0.5, 0),
-    Cyborg = Color3.new(0.5, 0.5, 1),
-    Ghoul = Color3.new(1, 0, 0)
+    Human = {Color = Color3.new(1, 1, 1), SoundId = "rbxassetid://1234567890"},
+    Fishman = {Color = Color3.new(0, 0, 1), SoundId = "rbxassetid://1234567891"},
+    Skypiean = {Color = Color3.new(1, 1, 0), SoundId = "rbxassetid://1234567892"},
+    Mink = {Color = Color3.new(1, 0.5, 0), SoundId = "rbxassetid://1234567893"},
+    Cyborg = {Color = Color3.new(0.5, 0.5, 1), SoundId = "rbxassetid://1234567894"},
+    Ghoul = {Color = Color3.new(1, 0, 0), SoundId = "rbxassetid://1234567895"}
 }
 
 Camera.FieldOfView = 70
@@ -25,31 +25,33 @@ local function DetectRace()
     return "Unknown"
 end
 
-local function ActivateRaceV3Fake(race)
+local function ActivateRaceV4Fake(race)
     if race == "Unknown" then return end
+
+    local raceData = Races[race]
 
     local light = Instance.new("PointLight")
     light.Parent = Character:FindFirstChild("HumanoidRootPart") or Character:WaitForChild("HumanoidRootPart")
     light.Brightness = 5
     light.Range = 15
-    light.Color = Races[race]
+    light.Color = raceData.Color
 
     local gui = Instance.new("ScreenGui", LocalPlayer:WaitForChild("PlayerGui"))
     local textLabel = Instance.new("TextLabel", gui)
     textLabel.Size = UDim2.new(0.3, 0, 0.1, 0)
     textLabel.Position = UDim2.new(0.35, 0, 0.4, 0)
-    textLabel.Text = race .. " V3 Activated! (Fake)"
+    textLabel.Text = race .. " V4 Activated! (Fake)"
     textLabel.TextScaled = true
-    textLabel.TextColor3 = Races[race]
+    textLabel.TextColor3 = raceData.Color
     textLabel.BackgroundTransparency = 1
     textLabel.Font = Enum.Font.SourceSansBold
 
     local sound = Instance.new("Sound", Character:WaitForChild("HumanoidRootPart"))
-    sound.SoundId = "rbxassetid://9118828561" -- ID âm thanh kích hoạt tộc V3
+    sound.SoundId = raceData.SoundId
     sound.Volume = 1
     sound.Looped = false
     sound:Play()
 end
 
 local currentRace = DetectRace()
-ActivateRaceV3Fake(currentRace)
+ActivateRaceV4Fake(currentRace)
