@@ -44,10 +44,11 @@ local function ActivateRaceV3Fake(race)
     textLabel.BackgroundTransparency = 1
     textLabel.Font = Enum.Font.SourceSansBold
 
-    task.delay(10, function()
-        light:Destroy()
-        gui:Destroy()
-    end)
+    local sound = Instance.new("Sound", Character:WaitForChild("HumanoidRootPart"))
+    sound.SoundId = "rbxassetid://9118828561" -- ID âm thanh kích hoạt tộc V3
+    sound.Volume = 1
+    sound.Looped = false
+    sound:Play()
 end
 
 local currentRace = DetectRace()
